@@ -3,16 +3,13 @@
 
 (defn parse-int [s] (Long/parseLong s))
 
-(defn add-month [old-date]
+(defn next-day [old-date]
   (let [[year month day] (map parse-int (str/split old-date #"-"))]
-    (str/join "-" (if (= month 12)
-                    [(inc year) 1 day]
-                    [year (inc month) day]))))
+    (cond (= day 30) (str/join "-" [year (inc month) 1])
+          (and (= day 30)  (= month 12)) (str/join "-" [(inc year) 1 1])
+          :else (str/join "-" [year month (inc day)]))))
 
-(defn next-date [old-date box]
-  (let [[year month day] (map parse-int (str/split old-date #"-"))]
-    (case box
-      4 (str/join "-" [year (inc month) day]))))
+(next-day "2021-12-19")
 
 (defn card-by-id! [id] (str/split-lines (slurp (str "resources/cards/" id ".card"))))
 
@@ -31,10 +28,10 @@
 
 (next-card! (load-reps!))
 
-(defn new-repetition [[_date card-id box] correct?]
+(defn new-repetition [[date card-id box] correct?]
   (if correct?
-    ["new-date" (min 4 (inc box)) card-id]
-    ["old-date" (max 1 (dec box)) card-id]))
+    [(next-day date) (min 4 (inc box)) card-id]
+    [date (max 1 (dec box)) card-id]))
 
 (defn update-repetitions [new-rep all-reps]
   (if (= (last new-rep) (second (last all-reps)))
@@ -44,7 +41,22 @@
 (defn write-repetitions [reps]
   (spit "resources/repetitions.txt" (str/join "\n" (map #(str/join " " %) reps))))
 
-(let [reps (load-reps!)
-      card (next-card! reps)]
-   (write-repetitions (update-repetitions (new-repetition card true) reps)))
+(comment
+  (let [reps (load-reps!)
+        card (next-card! reps)]
+     (update-repetitions (new-repetition card false) reps))
 
+  (let [reps (load-reps!)
+        card (next-card! reps)]
+     (update-repetitions (new-repetition card true) reps)))
+
+(defn run [& _args]
+  (let [reps (load-reps!)
+        card (next-card! reps)]
+    (println (second (last card)))
+    (read-line)
+    (println (last (last card)))
+    (println "Did you get it right? [y/n]")
+    (if (= "y" (read-line))
+      (write-repetitions (update-repetitions (new-repetition card true) reps))
+      (write-repetitions (update-repetitions (new-repetition card false) reps)))))
