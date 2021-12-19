@@ -2,37 +2,31 @@
   (:require [spaced-rep.app :as app]
             [spaced-rep.io :as io]))
 
-(comment
-  (let [reps (io/load-reps!)
-        card (io/next-card! reps)]
-    (app/update-repetitions (app/new-repetition card false) reps))
-
-  (let [reps (io/load-reps!)
-        card (io/next-card! reps)]
-    (app/update-repetitions (app/new-repetition card true) reps)))
+(defn cli-review!
+  "Returns a bool with the result of the review: true if success
+   false if fail."
+  [card]
+  (println (second card))
+  (read-line)
+  (println (last card))
+  (println "Did you get it right? [y/n]")
+  (= "y" (read-line)))
 
 (defn review []
-  (let [reps (io/load-reps!)
-        card (io/next-card! reps)]
-    (println (second (last card)))
-    (read-line)
-    (println (last (last card)))
-    (println "Did you get it right? [y/n]")
-    (if (= "y" (read-line))
-      (io/write-repetitions (app/update-repetitions (app/new-repetition card true) reps))
-      (io/write-repetitions (app/update-repetitions (app/new-repetition card false) reps)))))
+  (io/write-repetitions! (app/review-cycle (io/load-reps!) io/get-card-from-rep! cli-review!)))
 
-(defn new-card []
+(defn new-card [id]
   (let [card-atom (atom {})]
     (println "Front:")
     (swap! card-atom assoc :front (read-line))
     (println "Back:")
     (swap! card-atom assoc :back (read-line))
     (println @card-atom)
-    (io/new-card! @card-atom)))
+    (io/write-new-card! id @card-atom)
+    (io/write-repetitions! (app/update-repetition ["2021-12-20" id 1] (io/load-reps!)))))
 
 (defn run [& _args]
   (println *command-line-args*)
   (case (last *command-line-args*)
-    "new" (new-card)
+    "new" (new-card "test-id")
     (review)))
