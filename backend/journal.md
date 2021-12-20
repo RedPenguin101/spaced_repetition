@@ -77,3 +77,4 @@ App API will be really just `update-repetition`, and the only 'domain logic' is 
 | review   | `next-review-id :: rep-list -> id` | load reps, load card|
 | response | `process-review :: rep-list, id, bool -> rep-list` | load reps, write reps |
 | create card | `initial-rep :: id -> rep` | append rep, write card |
+

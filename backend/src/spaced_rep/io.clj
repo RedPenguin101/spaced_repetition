@@ -11,6 +11,7 @@
 (defn load-reps! []
   (->> (slurp "resources/repetitions.txt")
        (str/split-lines)
+       (remove empty?)
        (map #(vec (str/split % #" ")))
        (map #(update % 2 parse-int))))
 
@@ -18,4 +19,4 @@
   (spit "resources/repetitions.txt" (str/join "\n" (map #(str/join " " %) reps))))
 
 (defn append-repetition! [rep]
-  (spit "resources/repetitions.txt" (str/join " " rep) :append true))
+  (spit "resources/repetitions.txt" (str "\n" (str/join " " rep)) :append true))

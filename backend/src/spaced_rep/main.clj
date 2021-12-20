@@ -15,7 +15,8 @@
 (defn cli-review []
   (let [reps (io/load-reps!)
         id  (app/next-review-id reps)]
-     (when id (io/write-repetitions! (app/process-review reps id (cli-card-review! (io/load-card! id)))))))
+     (if id (io/write-repetitions! (app/process-review reps id (cli-card-review! (io/load-card! id))))
+       (println "No cards due for review"))))
 
 (defn new-card [id]
   (let [card-atom (atom {})]
@@ -25,10 +26,9 @@
     (swap! card-atom assoc :back (read-line))
     (println @card-atom)
     (io/write-card! id @card-atom)
-    (io/write-repetitions! (app/initial-repetition id (io/load-reps!)))))
+    (io/append-repetition! (app/initial-repetition id))))
 
 (defn run [& _args]
-  (println *command-line-args*)
   (case (last *command-line-args*)
     "new" (new-card (str (java.util.UUID/randomUUID)))
     (cli-review)))

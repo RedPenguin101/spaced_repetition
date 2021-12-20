@@ -40,8 +40,7 @@
 
 ;;; NEW API ;;;
 
-(defn initial-repetition [card-id reps]
-  (conj reps [(today) card-id 1]))
+(defn initial-repetition [card-id] [(today) card-id 1])
 
 (defn next-review-id [reps]
   (when (str<= (first (last reps)) (today))
