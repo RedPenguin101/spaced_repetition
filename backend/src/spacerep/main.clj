@@ -25,12 +25,10 @@
     (swap! card-atom assoc :front (read-line))
     (println "Back:")
     (swap! card-atom assoc :back (read-line))
-    (println @card-atom)
     (io/write-card! id @card-atom)
     (io/append-repetition! (app/initial-repetition id))))
 
 (defn run [args]
-  (println args)
   (case (last args)
     "new" (new-card (str (java.util.UUID/randomUUID)))
     (cli-review)))
