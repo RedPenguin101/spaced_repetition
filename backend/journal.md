@@ -41,4 +41,6 @@ Done. Next, date stuff :(
 
 Date stuff done, actually really easy. Just have to do the IDs. Probably use UUIDs.
 
-Right now it picks the last card off the bottom. Need a concept of 'nothing to review'
+Right now it picks the last card off the bottom. Need a concept of 'nothing to review'.
+
+

@@ -2,7 +2,7 @@
   (:require [spaced-rep.app :as app]
             [spaced-rep.io :as io]))
 
-(defn cli-review!
+(defn cli-card-review!
   "Returns a bool with the result of the review: true if success
    false if fail."
   [card]
@@ -12,8 +12,11 @@
   (println "Did you get it right? [y/n]")
   (= "y" (read-line)))
 
-(defn review []
-  (io/write-repetitions! (app/review-cycle (io/load-reps!) io/get-card-from-rep! cli-review!)))
+(defn review [reps]
+  (if (app/next-rep reps)
+    (recur (app/review-cycle reps io/get-card-from-rep! cli-card-review!))
+    (do (io/write-repetitions! reps)
+        (println "No reps"))))
 
 (defn new-card [id]
   (let [card-atom (atom {})]
@@ -29,4 +32,4 @@
   (println *command-line-args*)
   (case (last *command-line-args*)
     "new" (new-card (str (java.util.UUID/randomUUID)))
-    (review)))
+    (review (io/load-reps!))))
