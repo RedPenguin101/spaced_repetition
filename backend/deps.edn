@@ -1,1 +1,2 @@
-{:paths ["src" "resources"]}
+{:paths ["src" "resources"]
+ :deps {clojure.java-time/clojure.java-time {:mvn/version "0.3.3"}}}

@@ -1,25 +1,25 @@
 (ns spaced-rep.app
-  (:require [clojure.string :as str]))
+  (:require [java-time :as jt]))
 
-(defn parse-int [s] (Long/parseLong s))
+;; next date:
+;; box    time
+;;  1      +1
+;;  2      +2
+;;  3      +5
+;;  4     +30
 
-(defn next-day [old-date]
-  (let [[year month day] (map parse-int (str/split old-date #"-"))]
-    (cond (= day 30) (str/join "-" [year (inc month) 1])
-          (and (= day 30)  (= month 12)) (str/join "-" [(inc year) 1 1])
-          :else (str/join "-" [year month (inc day)]))))
-
-(next-day "2021-12-19")
+(defn next-day [old-date new-box]
+  (jt/format "yyyy-MM-dd" (jt/plus (jt/local-date "yyyy-MM-dd" old-date)
+                                   (jt/days (case new-box 1 1, 2 2, 3 5, 4 30)))))
 
 ;; A repetition has format [date card-id box]
 
 (defn process-response
   "Given a repetition and a (boolean) response, will return a new repetition,
-   with the date and box updated according to the programs rules."
+  with the date and box updated according to the programs rules."
   [[date card-id box] correct?]
-  (if correct?
-    [(next-day date) (min 4 (inc box)) card-id]
-    [date (max 1 (dec box)) card-id]))
+  (let [new-box (if correct? (min 4 (inc box)) (max 1 (dec box)))]
+    [(next-day date new-box) card-id new-box]))
 
 (defn next-rep [reps] (last reps))
 
@@ -30,6 +30,7 @@
    with the card id of the new-rep, it will be removed."
   [new-rep all-reps]
   (let [filtered-reps (remove #(= (second new-rep) (second %)) all-reps)]
+    (println "filtered-reps " filtered-reps)
     (reverse (sort-by first (conj filtered-reps new-rep)))))
 
 (defn review-cycle
