@@ -42,7 +42,9 @@
 
 (defn initial-repetition [card-id] [(today) card-id 1])
 
-(defn next-review-id [reps]
+(defn next-review-id
+  "Returns nil if no review is due"
+  [reps]
   (when (str<= (first (last reps)) (today))
     (second (last reps))))
 

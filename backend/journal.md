@@ -2,7 +2,7 @@
 
 ## Up Next
 
-* rest-like API interface
+* rest API interface
 * AWS S3
 * AWS Lambda
 * AWS API GW
