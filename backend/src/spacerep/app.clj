@@ -1,4 +1,4 @@
-(ns spaced-rep.app
+(ns spacerep.app
   (:require [java-time :as jt]))
 
 (defn- str<= [a b] (<= (compare a b) 0))

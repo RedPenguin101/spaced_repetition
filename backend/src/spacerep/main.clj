@@ -1,6 +1,7 @@
-(ns spaced-rep.main
-  (:require [spaced-rep.app :as app]
-            [spaced-rep.io :as io]))
+(ns spacerep.main
+  (:gen-class)
+  (:require [spacerep.app :as app]
+            [spacerep.io :as io]))
 
 (defn cli-card-review!
   "Returns a bool with the result of the review: true if success
@@ -32,4 +33,7 @@
   (case (last *command-line-args*)
     "new" (new-card (str (java.util.UUID/randomUUID)))
     (cli-review)))
+
+(defn -main []
+  (run nil))
 
