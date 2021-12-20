@@ -1,6 +1,8 @@
 (ns spaced-rep.app
   (:require [java-time :as jt]))
 
+(defn today [] (jt/format "yyyy-MM-dd" (jt/local-date)))
+
 ;; next date:
 ;; box    time
 ;;  1      +1

@@ -34,3 +34,11 @@ Next: new cards, still CLI
 * Prompt for back
 * Add card
 * Add repetition
+
+Done. Next, date stuff :(
+
+## 20th December
+
+Date stuff done, actually really easy. Just have to do the IDs. Probably use UUIDs.
+
+Right now it picks the last card off the bottom. Need a concept of 'nothing to review'

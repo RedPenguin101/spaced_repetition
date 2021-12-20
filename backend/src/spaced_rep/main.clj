@@ -23,10 +23,10 @@
     (swap! card-atom assoc :back (read-line))
     (println @card-atom)
     (io/write-new-card! id @card-atom)
-    (io/write-repetitions! (app/update-repetition ["2021-12-20" id 1] (io/load-reps!)))))
+    (io/write-repetitions! (app/update-repetition [(app/today) id 1] (io/load-reps!)))))
 
 (defn run [& _args]
   (println *command-line-args*)
   (case (last *command-line-args*)
-    "new" (new-card "test-id")
+    "new" (new-card (str (java.util.UUID/randomUUID)))
     (review)))
