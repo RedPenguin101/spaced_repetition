@@ -42,7 +42,7 @@ Date stuff done, actually really easy. Just have to do the IDs. Probably use UUI
 
 Right now it picks the last card off the bottom. Need a concept of 'nothing to review'. DONE
 
-I think that's it for basic functionality. The app API is:
+I think that's it for basic functionality. The app/business logic API is:
 
 * `pending-reviews?`: returns true if there are reviews for today
 * `review-cycle`: given a method for getting cards, and a method for reviewing cards, will update the repetitions for the review outcome
@@ -66,3 +66,14 @@ The public API (to be written) is:
 * `response`: POST: receives a card-id and bool
 * `new-card`: POST: receives a front and back
 
+As an alternative to this API, you could have something more like: you get delivered all the cards for review today, and you send back the responses all at once. It let's you do this in-memory loop, which works for the CLI. But doesn't translate to REST, and over complicated I think. Saves on API calls but not a needed optimization.
+
+One thing: the current model assumes you have all repetitions in memory at once (`update-repetition` etc.) Probably OK for now.
+
+App API will be really just `update-repetition`, and the only 'domain logic' is what the new repetition looks like. Everything else is IO.
+
+| public   | app                               | IO             |
+|----------|-----------------------------------|----------------|
+| review   | `next-review-id :: rep-list -> id` | load reps, load card|
+| response | `process-review :: rep-list, id, bool -> rep-list` | load reps, write reps |
+| create card | `initial-rep :: id -> rep` | append rep, write card |

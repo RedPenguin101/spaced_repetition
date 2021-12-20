@@ -14,42 +14,40 @@
 ;;  4     +30
 
 (defn- next-day [old-date new-box]
-  (date->str (jt/plus (str->date old-date)
-                      (jt/days (case new-box 1 1, 2 2, 3 5, 4 30)))))
+  (let [days (jt/days (case new-box 1 1, 2 2, 3 5, 4 30))]
+    (-> old-date
+        (str->date)
+        (jt/plus days)
+        (date->str))))
 
 ;; A repetition has format [date card-id box]
 
-(defn- process-response
+(defn- update-rep
   "Given a repetition and a (boolean) response, will return a new repetition,
   with the date and box updated according to the programs rules."
   [[date card-id box] correct?]
   (let [new-box (if correct? (min 4 (inc box)) (max 1 (dec box)))]
     [(next-day date new-box) card-id new-box]))
 
-(defn- next-rep [reps]
-  (when (str<= (first (last reps)) (today))
-    (last reps)))
-
-(defn- update-repetition
+(defn- update-repetition-list
   "Given a list of existing repetitions and a new repetition, 
    will return a list of repetitions. Each card-id can only 
    exist in the list once, so if there was an existing repetition
    with the card id of the new-rep, it will be removed."
   [new-rep all-reps]
   (let [filtered-reps (remove #(= (second new-rep) (second %)) all-reps)]
-    (println "filtered-reps " filtered-reps)
     (reverse (sort-by first (conj filtered-reps new-rep)))))
+
+;;; NEW API ;;;
 
 (defn initial-repetition [card-id reps]
   (conj reps [(today) card-id 1]))
 
-(defn review-cycle
-  "Picks the next card for review, presents it (by calling the card-fn),
-   reviews if (by calling the review-fn, which should return true if the
-   review was successful).
-   Returns a new version of the reps."
-  [reps card-fn review-fn]
-  (update-repetition (process-response (next-rep reps) (review-fn (card-fn (last reps)))) reps))
+(defn next-review-id [reps]
+  (when (str<= (first (last reps)) (today))
+    (second (last reps))))
 
-(defn pending-reviews? [reps]
-  (next-rep reps))
+(defn process-review [rep-list id correct?]
+  (let [old-rep (first (filter #(= (second %) id) rep-list))]
+    (update-repetition-list (update-rep old-rep correct?) rep-list)))
+
