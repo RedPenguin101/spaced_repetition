@@ -1,7 +1,7 @@
 (ns spaced-rep.io
   (:require [clojure.string :as str]))
 
-(defn parse-int [s] (Long/parseLong s))
+(defn- parse-int [s] (Long/parseLong s))
 
 (defn get-card-from-rep! [[_ id _]] (str/split-lines (slurp (str "resources/cards/" id ".card"))))
 

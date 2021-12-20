@@ -1,13 +1,12 @@
-# Backend todo
+# Backend
 
-* ~~Algorithm for spaced repetition~~ DONE
-* ~~Card storage format/spec~~ DONE
-* ~~Next card storage format/spec~~ DONE
-* Fetch and return card
-* Fetch and return next card
-* Fetch and return next card with spaced rep options
-* Process response
-* Create card method
+## Up Next
+
+* rest-like API interface
+* AWS S3
+* AWS Lambda
+* AWS API GW
+* Frontend
 
 ## Pages
 
@@ -41,6 +40,29 @@ Done. Next, date stuff :(
 
 Date stuff done, actually really easy. Just have to do the IDs. Probably use UUIDs.
 
-Right now it picks the last card off the bottom. Need a concept of 'nothing to review'.
+Right now it picks the last card off the bottom. Need a concept of 'nothing to review'. DONE
 
+I think that's it for basic functionality. The app API is:
+
+* `pending-reviews?`: returns true if there are reviews for today
+* `review-cycle`: given a method for getting cards, and a method for reviewing cards, will update the repetitions for the review outcome
+* `initial-repetition`: adds the initial repetition for a card
+
+For IO:
+
+* `write-new-card!`
+* `get-card-from-rep!`
+* `load-reps!`
+* `write-reps!`
+
+The two types are:
+
+* `repetition: date, id, box`
+* `card: id, front, back`
+
+The public API (to be written) is:
+
+* `review`: GET: returns a card
+* `response`: POST: receives a card-id and bool
+* `new-card`: POST: receives a front and back
 

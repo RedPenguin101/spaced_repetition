@@ -13,7 +13,7 @@
   (= "y" (read-line)))
 
 (defn review [reps]
-  (if (app/next-rep reps)
+  (if (app/pending-reviews? reps)
     (recur (app/review-cycle reps io/get-card-from-rep! cli-card-review!))
     (do (io/write-repetitions! reps)
         (println "No reps"))))
