@@ -7,7 +7,7 @@
 (defn load-card! [id] (str/split-lines (slurp (resource (str "cards/" id ".card")))))
 
 (defn write-card! [id card]
-  (spit (resource (str "cards/" id ".card")) (str/join "\n" (into [id] (vals card)))))
+  (spit (resource (str "resources/cards/" id ".card")) (str/join "\n" (into [id] (vals card)))))
 
 (defn load-reps! []
   (->> (resource "repetitions.txt")

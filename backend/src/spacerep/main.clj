@@ -29,11 +29,12 @@
     (io/write-card! id @card-atom)
     (io/append-repetition! (app/initial-repetition id))))
 
-(defn run [& _args]
-  (case (last *command-line-args*)
+(defn run [args]
+  (println args)
+  (case (last args)
     "new" (new-card (str (java.util.UUID/randomUUID)))
     (cli-review)))
 
-(defn -main []
-  (run nil))
+(defn -main [& args]
+  (run args))
 
